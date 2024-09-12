@@ -1,6 +1,11 @@
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
+const cors = require("cors");
+
+
+app.use(express.static('dist'));
+app.use(cors());
 app.use(express.json());
 
 
@@ -64,9 +69,10 @@ app.get(`${baseURL}/persons/:id`, (req, res) => {
 
 app.delete(`${baseURL}/persons/:id`, (req, res) => {
     const id = req.params.id;
-    if (checkMatch(id)) {
+    const match = checkMatch(id);
+    if (match) {
         numerot = numerot.filter(nro => nro.id !== id);
-        return res.status(204).end();
+        return res.status(200).json(match);
     }
     res.status(404).end();
 
@@ -92,14 +98,15 @@ app.post((`${baseURL}/persons`), (req, res) => {
     }
     numerot.push(newContact);
     console.log(newContact);
-    res.status(201).end();
+    res.status(201).json(newContact);
     
 })
 
 
 
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001
+
 app.listen(PORT, () => {
     console.log("Running on port", PORT)
 })
