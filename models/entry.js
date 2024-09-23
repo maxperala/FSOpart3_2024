@@ -4,9 +4,18 @@ const numSchema = mongoose.Schema({
     
     name: {
         type: String,
-        unique: true
+        unique: true,
+        minlength: 3,
     },
-    number: String
+    number: {
+        type: String,
+        minlength: 8,
+        validate: {
+            validator: (num) => {
+                return /^(0\d{1,2})-\d{5,10}$/.test(num);
+            }
+        }
+    }
 });
 
 numSchema.set("toJSON", {
